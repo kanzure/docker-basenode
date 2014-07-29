@@ -1,0 +1,6 @@
+[confd]
+interval = 4
+consul-addr = "127.0.0.1:8500"
+backend = "consul"
+consul = true
+confdir = "/etc/confd"
