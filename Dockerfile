@@ -25,6 +25,9 @@ RUN apt-get install -y haproxy
 # cleanup
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# make a place to put consul config
+RUN mkdir -p /etc/consul/conf.d/
+
 # also include supervisord config
 ADD ./etc/supervisor/conf.d/confd.conf /etc/supervisor/conf.d/
 ADD ./etc/supervisor/conf.d/consul.conf /etc/supervisor/conf.d/
