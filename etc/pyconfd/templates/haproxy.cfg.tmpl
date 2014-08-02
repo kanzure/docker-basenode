@@ -1,0 +1,78 @@
+# This is an attempt at configuring haproxy. This file is a template that is
+# thrown through confd, which is responsible for parsing the template and
+# forcing haproxy to load the new configuration without dropping active
+# connections. confd is informed about network changes, causing it to generate
+# a new config file from this template.
+#
+# Network events are basically different servers joining and leaving the
+# cluster, each server providing at least one service to the cluster. Every
+# node in the cluster runs confd and haproxy. Any service talking to another
+# goes through localhost:9001 (or whatever port is assigned in this file for
+# that service), and then the request gets routed to what is hopefully a
+# healthy service provider of that type in the cluster.
+#
+# .. assuming that I got this config file right. So what should happen:
+# 
+#   1) haproxy listens on localhost:9301
+#   2) application on localhost connects to localhost:9301
+#   3) haproxy picks a server and connects
+#   4) normal connection lifecycle things happen here
+#
+# Each node in the cluster is defined from a git repository that includes this
+# file via a submodule, so each haproxy instance runs the same set of frontends
+# and backends.
+
+global
+    log         127.0.0.1 local0 crit
+    pidfile     /var/run/haproxy.pid
+    nbproc 2
+    stats socket /var/run/haproxy.stat mode 666
+    maxconn     65000
+    tune.maxrewrite 1024
+    tune.bufsize 32768
+    user        haproxy
+    group       haproxy
+    daemon
+
+defaults
+    log global
+
+    # sometimes this will be tcp
+    mode http
+    option httplog
+
+    option dontlognull
+
+    # timeout 2 seconds if backend doesn't respond
+    timeout connect 2000
+
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
+
+backend postgresql
+    mode tcp
+    balance roundrobin
+{% for server in servers["postgresql"] %}
+    server {{ server }} port 5432
+{% endfor %}
+
+# Should only allow 127.0.0.1, but * for sake of debugging.
+frontend postgresql
+    bind :9301
+    default_backend postgresql
+
+backend bitcoin
+    mode tcp
+    balance roundrobin
+{% for server in servers["bitcoin"] %}
+    server {{ server }} port 8332
+{% endfor %}
+
+frontend bitcoin
+    bind :9302
+    default_backend bitcoin
