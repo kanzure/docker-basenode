@@ -33,8 +33,17 @@ class HAProxyPlugin(pyconfd.Plugin):
         """
         data = {"servers": {}}
         session = consulate.Consulate()
-        services = session.catalog.services().keys()
-        for service in services:
+
+        # session.catalog.services() returns a list with a single dictionary
+        services = session.catalog.services()
+
+        service_keys = []
+        if isinstance(services, list) and len(services) > 0 and isinstance(services[0], dict):
+            service_keys = services[0].keys()
+        elif isinstance(services, dict):
+            service_keys = services.keys()
+
+        for service in service_keys:
             data["servers"][service] = []
             servers = session.catalog.service(service)
             for server in servers:
