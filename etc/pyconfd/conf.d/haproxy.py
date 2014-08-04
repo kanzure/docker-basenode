@@ -31,12 +31,18 @@ class HAProxyPlugin(pyconfd.Plugin):
 
         :rtype: dict
         """
-        data = {"servers": {}}
         session = consulate.Consulate()
+
+        # prepare data for jinja to consume for the jinja template
+        data = {"servers": {}}
+
+        # get a list of available servers in the cluster
+        accessible_addresses = [srv["Addr"] for srv in session.agent.members()]
 
         # session.catalog.services() returns a list with a single dictionary
         services = session.catalog.services()
 
+        # get all names of services provided by cluster
         service_keys = []
         if isinstance(services, list) and len(services) > 0 and isinstance(services[0], dict):
             service_keys = services[0].keys()
@@ -45,8 +51,15 @@ class HAProxyPlugin(pyconfd.Plugin):
 
         for service in service_keys:
             data["servers"][service] = []
+
+            # figure out servers with that service
             servers = session.catalog.service(service)
+
             for server in servers:
                 ip_address = server["Address"]
-                data["servers"][service].append(ip_address)
+
+                # only add server if it's in the current cluster
+                if ip_address in accessible_addresses:
+                    data["servers"][service].append(ip_address)
+
         return data
