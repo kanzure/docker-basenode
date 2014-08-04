@@ -26,7 +26,7 @@ RUN git clone https://github.com/gmr/consulate.git /tmp/consulate
 RUN cd /tmp/consulate && python setup.py install
 
 # install pyconfd
-RUN pip install pyconfd==0.0.6
+RUN pip install pyconfd==0.0.7
 
 # install haproxy
 RUN apt-get install -y haproxy
