@@ -21,6 +21,8 @@
 # Each node in the cluster is defined from a git repository that includes this
 # file via a submodule, so each haproxy instance runs the same set of frontends
 # and backends.
+#
+# see http://cbonte.github.io/haproxy-dconv/configuration-1.5.html
 
 global
     log         127.0.0.1 local0 crit
@@ -35,14 +37,25 @@ global
 defaults
     log global
 
-    # sometimes this will be tcp
     mode http
     option httplog
 
     option dontlognull
 
-    # timeout 2 seconds if backend doesn't respond
-    timeout connect 2000
+    # Set the maximum time to wait for a connection attempt to a server to succeed.
+    timeout connect 5s
+
+    # maximum inactivity time from the client
+    timeout client 10s
+
+    # maximum inactivity time from the server
+    timeout server 10s
+
+    # Keep the client and server timeout time the same, according to haproxy
+    # docs.
+
+    # Let clients fetch multiple resources at a time.
+    timeout http-keep-alive 200ms
 
     errorfile 400 /etc/haproxy/errors/400.http
     errorfile 403 /etc/haproxy/errors/403.http
