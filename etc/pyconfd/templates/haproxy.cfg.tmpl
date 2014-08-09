@@ -25,13 +25,14 @@
 # see http://cbonte.github.io/haproxy-dconv/configuration-1.5.html
 
 global
-    log         127.0.0.1 local0 crit
-    pidfile     /var/run/haproxy.pid
+    log 127.0.0.1 local0 crit
+    pidfile /var/run/haproxy.pid
     stats socket /var/run/haproxy.stat mode 666
     nbproc 1
-    maxconn     65000
-    user        haproxy
-    group       haproxy
+    maxconn 65000
+    chroot /var/lib/haproxy
+    user haproxy
+    group haproxy
     daemon
 
 defaults
