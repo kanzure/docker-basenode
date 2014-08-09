@@ -28,8 +28,6 @@ global
     stats socket /var/run/haproxy.stat mode 666
     nbproc 1
     maxconn     65000
-    tune.maxrewrite 1024
-    tune.bufsize 32768
     user        haproxy
     group       haproxy
     daemon
