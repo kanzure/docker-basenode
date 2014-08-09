@@ -12,7 +12,7 @@
 # healthy service provider of that type in the cluster.
 #
 # .. assuming that I got this config file right. So what should happen:
-# 
+#
 #   1) haproxy listens on localhost:9301
 #   2) application on localhost connects to localhost:9301
 #   3) haproxy picks a server and connects
@@ -33,15 +33,9 @@ global
     chroot /var/lib/haproxy
     user haproxy
     group haproxy
-    daemon
 
 defaults
     log global
-
-    mode http
-    option httplog
-
-    option dontlognull
 
     # Set the maximum time to wait for a connection attempt to a server to
     # succeed.
