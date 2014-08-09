@@ -33,6 +33,9 @@ class HAProxyPlugin(pyconfd.Plugin):
         """
         session = consulate.Consulate()
 
+        # track number of servers
+        counter = 0
+
         # prepare data for jinja to consume for the jinja template
         data = {"servers": {}}
 
@@ -60,6 +63,7 @@ class HAProxyPlugin(pyconfd.Plugin):
 
                 # only add server if it's in the current cluster
                 if ip_address in accessible_addresses:
-                    data["servers"][service].append(ip_address)
+                    data["servers"][service].append((counter, ip_address))
+                    counter += 1
 
         return data

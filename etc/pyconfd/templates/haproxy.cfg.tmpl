@@ -69,8 +69,7 @@ defaults
 backend postgresql
     mode tcp
     balance roundrobin
-{% for server in servers["postgresql"] %}
-    server {{ server }} port 5432
+{% for (counter, server) in servers["postgresql"] %}    server server{{ counter }} {{ server }}:5432
 {% endfor %}
 
 # Should only allow 127.0.0.1, but * for sake of debugging.
@@ -81,8 +80,7 @@ frontend postgresql
 backend bitcoin
     mode tcp
     balance roundrobin
-{% for server in servers["bitcoin"] %}
-    server {{ server }} port 8332
+{% for (counter, server) in servers["bitcoin"] %}    server server{{ counter }} {{ server }}:8332
 {% endfor %}
 
 frontend bitcoin
