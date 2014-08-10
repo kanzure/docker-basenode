@@ -8,8 +8,10 @@ this goes here: /etc/pyconfd/conf.d/haproxy.py
 """
 import subprocess
 import shlex
-import pyconfd
 import consulate
+
+import pyconfd
+from pyconfd.logstuff import log
 
 class HAProxyPlugin(pyconfd.Plugin):
 
@@ -80,11 +82,11 @@ class HAProxyPlugin(pyconfd.Plugin):
         except Exception as exc:
             command = "/usr/sbin/haproxy -f {{ dest }} -p /var/run/haproxy.pid"
         else:
-            command = "/usr/sbin/haproxy -f {{ dest }} -p /var/run/haproxy.pid -sf $(echo xyz)"
+            command = "/usr/sbin/haproxy -f {{ dest }} -p /var/run/haproxy.pid -sf xyz"
             command = command.replace("xyz", " ".join(pids))
 
         command = command.replace("{{ dest }}", self.dest)
-        print "Running reload_cmd: {}".format(command)
+        log.debug("Running reload_cmd: {}".format(command))
 
         args = shlex.split(command)
         process = subprocess.Popen(args)
