@@ -6,7 +6,8 @@ is executed and the target service reloads.
 
 this goes here: /etc/pyconfd/conf.d/haproxy.py
 """
-
+import subprocess
+import shlex
 import pyconfd
 import consulate
 
@@ -23,7 +24,8 @@ class HAProxyPlugin(pyconfd.Plugin):
 
     # Safely reload the process. Also, if you are using supervisord you can run
     # "supervisordctl reload haproxy", but it would drop active connections.
-    reload_cmd = "/usr/sbin/haproxy -f {{ dest }} -p /var/run/haproxy.pid -sf $(</var/run/haproxy.pid)"
+    reload_cmd = "/usr/sbin/haproxy -f {{ dest }} -p /var/run/haproxy.pid -sf $(pidof haproxy)"
+    reload_cmd = "supervisorctl restart haproxy"
 
     def get(self):
         """
@@ -67,3 +69,22 @@ class HAProxyPlugin(pyconfd.Plugin):
                     counter += 1
 
         return data
+
+    def reload_process(self):
+        """
+        Graceful reload if haproxy is already running.
+        """
+        try:
+            output = subprocess.check_output(["pidof", "haproxy"])
+            pids = output.strip()
+        except Exception as exc:
+            command = "/usr/sbin/haproxy -f {{ dest }} -p /var/run/haproxy.pid"
+        else:
+            command = "/usr/sbin/haproxy -f {{ dest }} -p /var/run/haproxy.pid -sf $(echo xyz)"
+            command = command.replace("xyz", " ".join(pids))
+
+        command = command.replace("{{ dest }}", self.dest)
+        print "Running reload_cmd: {}".format(command)
+
+        args = shlex.split(command)
+        process = subprocess.Popen(args)
