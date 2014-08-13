@@ -72,12 +72,32 @@ frontend postgresql
     bind :9301
     default_backend postgresql
 
-backend bitcoin
+backend bitcoin-mainnet
     mode tcp
     balance roundrobin
-{% for (counter, server) in servers["bitcoin"] %}    server server{{ counter }} {{ server }}:8332
+{% for (counter, server) in servers["bitcoin-mainnet"] %}    server server{{ counter }} {{ server }}:8332
 {% endfor %}
 
-frontend bitcoin
+frontend bitcoin-mainnet
     bind :9302
-    default_backend bitcoin
+    default_backend bitcoin-mainnet
+
+backend bitcoin-testnet
+    mode tcp
+    balance roundrobin
+{% for (counter, server) in servers["bitcoin-testnet"] %}    server server{{ counter }} {{ server }}:8334
+{% endfor %}
+
+frontend bitcoin-testnet
+    bind :9303
+    default_backend bitcoin-testnet
+
+backend bitcoin-regtest
+    mode tcp
+    balance roundrobin
+{% for (counter, server) in servers["bitcoin-regtest"] %}    server server{{ counter }} {{ server }}:8336
+{% endfor %}
+
+frontend bitcoin-regtest
+    bind :9303
+    default_backend bitcoin-regtest
