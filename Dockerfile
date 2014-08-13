@@ -64,5 +64,5 @@ WORKDIR /etc/supervisor/conf.d
 CMD ["/sbin/my_init"]
 
 # open up some ports
-# TODO: what are each of these for?
+# consul rpc 8400, http 8500, dns 8600, lan 8301, wlan 8302
 EXPOSE 8400 8500 8600/udp
