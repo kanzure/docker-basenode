@@ -50,8 +50,9 @@ ADD ./etc/my_init.d/01_supervisord.sh /etc/my_init.d/
 RUN chmod o+x /etc/my_init.d/01_supervisord.sh
 
 # always join consul cluster
-ADD ./etc/my_init.d/02_consuljoin.sh /etc/my_init.d/
-RUN chmod o+x /etc/my_init.d/02_consuljoin.sh
+ADD ./etc/supervisor/conf.d/consuljoin.conf /etc/supervisor/conf.d/
+ADD ./consuljoin.sh /
+RUN chmod o+x /consuljoin.sh
 
 # also include pyconfd config
 ADD ./etc/pyconfd /etc/pyconfd
