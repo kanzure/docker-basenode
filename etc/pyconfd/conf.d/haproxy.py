@@ -78,7 +78,7 @@ class HAProxyPlugin(pyconfd.Plugin):
         """
         try:
             output = subprocess.check_output(["pidof", "haproxy"])
-            pids = output.strip()
+            pids = output.strip().split(" ")
         except Exception as exc:
             command = "/usr/sbin/haproxy -f {{ dest }} -p /var/run/haproxy.pid"
         else:
