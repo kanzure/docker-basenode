@@ -8,6 +8,7 @@
 
 This container arrangement makes popular tasks much less painful:
 
+* Never hard code IP addresses in source code. Instead, connect to localhost:7101 where haproxy routes traffic to a "random" postgresql server (because of the port number) in the cluster. Consul tracks cluster membership as nodes join and leave.
 * Registering a consul service? Just drop a consul JSON file into /etc/consul/conf.d/ (directory is not present in this repository because it's empty).
 * Registering a new service for supervisor to manage? Just drop a config file into /etc/supervisor/conf.d/
 * Same goes for consul health checks.
