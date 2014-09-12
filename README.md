@@ -90,7 +90,7 @@ FROM basenode
 
 ## ssh
 
-Just grep for the IP address and then ssh into the container. Also there is a thing called nsenter?
+Just grep for the IP address and then ssh into the container. Also there is a thing called [nsenter](https://github.com/jpetazzo/nsenter).
 
 ``` bash
 sudo docker ps .. something ..
