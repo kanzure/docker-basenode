@@ -1,5 +1,7 @@
 **docker-basenode** is a docker container that provides some basic service discovery benefits. The container is based on [phusion/baseimage](https://github.com/phusion/baseimage-docker) and includes [supervisor](https://github.com/supervisor/supervisor), [pyconfd](https://github.com/kanzure/pyconfd) similar to [confd](https://github.com/kelseyhightower/confd), [haproxy](https://github.com/haproxy/haproxy) and [consul](https://github.com/hashicorp/consul).
 
+"interesting!" - [andrewwatson](https://github.com/andrewwatson)
+
 # Why?
 
 This container arrangement makes popular tasks much less painful:
