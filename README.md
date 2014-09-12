@@ -78,6 +78,18 @@ Just grep for the IP address and then ssh into the container. Also there is a th
 sudo docker ps .. something ..
 ```
 
+# Why?
+
+This container arrangement makes popular tasks much less painful:
+
+* Registering a consul service? Just drop a consul JSON file into /etc/consul/conf.d/ (directory is not present in this repository because it's empty).
+* Registering a new service for supervisor to manage? Just drop a config file into /etc/supervisor/conf.d/
+* Same goes for consul health checks.
+* All applications in the cluster use the same service discovery mechanisms.
+* Cluster automatically load balances between different service providers, no single point of failure.
+* Shared haproxy template across all containers in the cluster.
+* All of the usual benefits from [phusion/baseimage](https://github.com/phusion/baseimage-docker) happen too.
+
 # license
 
 Dunno, suggest something.
