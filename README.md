@@ -1,5 +1,17 @@
 **docker-basenode** is a docker container that provides some basic service discovery benefits. The container is based on [phusion/baseimage](https://github.com/phusion/baseimage-docker) and includes [supervisor](https://github.com/supervisor/supervisor), [pyconfd](https://github.com/kanzure/pyconfd) similar to [confd](https://github.com/kelseyhightower/confd), [haproxy](https://github.com/haproxy/haproxy) and [consul](https://github.com/hashicorp/consul).
 
+# Why?
+
+This container arrangement makes popular tasks much less painful:
+
+* Registering a consul service? Just drop a consul JSON file into /etc/consul/conf.d/ (directory is not present in this repository because it's empty).
+* Registering a new service for supervisor to manage? Just drop a config file into /etc/supervisor/conf.d/
+* Same goes for consul health checks.
+* All applications in the cluster use the same service discovery mechanisms.
+* Cluster automatically load balances between different service providers, no single point of failure.
+* Shared haproxy template across all containers in the cluster.
+* All of the usual benefits from [phusion/baseimage](https://github.com/phusion/baseimage-docker) happen too.
+
 # Service Discovery
 
 Application containers using this container as a parent should route all outgoing HTTP/TCP requests through localhost on some port. The port is defined in the haproxy configuration in the basenode container. Every container in the cluster has the same haproxy configuration. The haproxy configuration is updated every 5 seconds by pyconfd, which retrieves information from consul running on the local container. Changes in the data received from consul will cause pyconfd to generate a new haproxy config file and then cause pyconfd to trigger a graceful reload of haproxy. Previous connections through haproxy will be maintained as haproxy goes online with the new configuration. Future connections through haproxy will then be load balanced to one of the services that consul indicates the presence of (by IP address).
@@ -77,18 +89,6 @@ Just grep for the IP address and then ssh into the container. Also there is a th
 ``` bash
 sudo docker ps .. something ..
 ```
-
-# Why?
-
-This container arrangement makes popular tasks much less painful:
-
-* Registering a consul service? Just drop a consul JSON file into /etc/consul/conf.d/ (directory is not present in this repository because it's empty).
-* Registering a new service for supervisor to manage? Just drop a config file into /etc/supervisor/conf.d/
-* Same goes for consul health checks.
-* All applications in the cluster use the same service discovery mechanisms.
-* Cluster automatically load balances between different service providers, no single point of failure.
-* Shared haproxy template across all containers in the cluster.
-* All of the usual benefits from [phusion/baseimage](https://github.com/phusion/baseimage-docker) happen too.
 
 # license
 
