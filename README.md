@@ -58,7 +58,7 @@ Follow the security guidelines from [phusion/baseimage](https://github.com/phusi
 
 # usage
 
-Here is how you do things.
+Here is how you do things. None of this violates docker conventions, so see docker docs too.
 
 ## build
 
@@ -69,6 +69,8 @@ docker build -t basenode .
 ```
 
 ## run
+
+To check this container without the presence of an application, use docker run:
 
 ``` bash
 docker run --rm=true -i -t basenode /bin/bash
