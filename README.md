@@ -94,7 +94,7 @@ FROM basenode
 Just grep for the IP address and then ssh into the container. Also there is a thing called [nsenter](https://github.com/jpetazzo/nsenter).
 
 ``` bash
-sudo docker ps .. something ..
+sudo docker inspect bitcoin_1 | grep IPAddress
 ```
 
 # license
